@@ -71,8 +71,7 @@ class Who extends \PhpSlackBot\Command\BaseCommand {
 
 		if( strpos( $question, 'broke' ) !== false || strpos( $question, 'broken' ) !== false ) {
 			$this->send($this->getCurrentChannel(), null, "It would be Eugene\nThis guy https://avatars0.githubusercontent.com/u/10735132?v=3&s=400" );
-		}
-		if( strpos( $question, 'who am i' ) !== false ) {
+		} elseif ( strpos( $question, 'who am i' ) !== false ) {
 			$this->send($this->getCurrentChannel(), null, $this->getUserNameFromUserId( $this->getCurrentUser() ) );
 		} elseif ( strpos( $question, 'who are you' ) !== false ) {
 			$this->send($this->getCurrentChannel(), null, "My name is J.a.r.v.i.s\nI'm a slack bot created by SPP core team" );
@@ -177,13 +176,24 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		if ( count( $command ) < 3 ) {
 			$this->send($this->getCurrentChannel(), null, "Error: i.e 'tail sit-heraldsun start'" );
 		} else {
-			$channel = $message['channel'];
-			$user = $message['user'];
-			$collector = 'spp-' . $command[1];
-			$exec = "curl 'http://localhost:8080/?slack_id=" . $channel . "&source=" . $collector . "'";
-//			exec( $exec );
-			$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
-			$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
+			$channel   = $message['channel'];
+			$user      = $message['user'];
+			$collector = 'spp-' . strtolower( $command[1] );
+			$action    = strtolower( $command[2] );
+
+			if ( 'start' === $action ) {
+				$exec = "curl 'http://localhost:8080/?slack_id=" . $channel . "&source=" . $collector . "'";
+//			    exec( $exec );
+				$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
+				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
+			} elseif ( 'stop' === $action ) {
+				$exec = "curl 'STOP'"; // Add command to stop
+//			    exec( $exec );
+				$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
+				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
+			} else {
+				$this->send($this->getCurrentChannel(), null, 'Error: Action non allowed (start|stop)' );
+			}
 		}
 	}
 }
@@ -196,7 +206,6 @@ class SumoWebhook extends \PhpSlackBot\Webhook\BaseWebhook {
 
 	protected function execute($payload, $context) {
 		$this->send( $payload['channel'], null, '```' . $payload['text'] . '```' );
-		// $this->getClient()->send(json_encode($payload));
 	}
 }
 
