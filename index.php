@@ -166,9 +166,7 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function get_sites_list() {
-		return array(
-			'sit-heraldsun',
-		);
+		return include( __DIR__ . '/instances.php' );
 	}
 }
 
