@@ -144,7 +144,7 @@ class How extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-class Help extends \PhpSlackBot\Command\BaseCommand {
+class Helper extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
 		$this->setName('help');
@@ -156,13 +156,19 @@ class Help extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function usage() {
-		$usage = "`tail [<instance>] < start | stop >`" . "\n" .
+		$usage = "`tail <instance> < start | stop >`" . "\n" .
 		         "     Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
 		         "     Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
 		         "     Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
 		         "     Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
 
 		return '*Usage*: ' . $usage;
+	}
+
+	public function get_sites_list() {
+		return array(
+			'sit-heraldsun',
+		);
 	}
 }
 
@@ -174,17 +180,19 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function execute($message, $context) {
 		$params = explode(" ", $message['text'] );
-		$help = new Help();
+		$helper = new Helper();
+
 		/**
 		 * e.g. tail sit-heraldsun start
 		 *
 		 * 0 tail
-		 * 1 env
-		 * 2 action (start, stop)
-		 *
+		 * 1 <instance>
+		 * 2 <start|stop>
 		 */
 		if ( count( $params ) !== 3 ) {
-			$this->send($this->getCurrentChannel(), null, $help->usage() );
+			$this->send($this->getCurrentChannel(), null, $helper->usage() );
+		} elseif ( ! in_array( $params[1], $helper->get_sites_list(), true ) ) {
+			$this->send($this->getCurrentChannel(), null, "Error: Instance does not exist" );
 		} else {
 			$command   = $message['text'];
 			$channel   = $message['channel'];
@@ -203,7 +211,7 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 				$this->send($this->getCurrentChannel(), null, '>*' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} else {
-				$this->send($this->getCurrentChannel(), null, "Error: Action non allowed (start|stop)\n" . $help->usage() );
+				$this->send($this->getCurrentChannel(), null, "Error: Action non allowed (start|stop)\n" . $helper->usage() );
 			}
 		}
 	}
@@ -229,7 +237,7 @@ $bot = new Bot();
 $bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/services/new/bot
 $bot->loadCommand( new Ciao() );
 $bot->loadCommand( new Hi() );
-$bot->loadCommand( new Help() );
+$bot->loadCommand( new Helper() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new How() );
