@@ -144,6 +144,19 @@ class How extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
+class SiteList extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('list');
+	}
+
+	protected function execute($message, $context) {
+		$helper = new Helper();
+		$this->send($this->getCurrentChannel(), null, "*List of available instances*: \n" . implode( "\n", $helper->get_sites_list() ) );
+	}
+
+}
+
 class Helper extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -156,13 +169,19 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function usage() {
-		$usage = "`tail <instance> < start | stop >`" . "\n" .
-		         "     Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
-		         "     Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
-		         "     Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
-		         "     Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
+		$tailUsage = "*Usage*: `tail <instance> < start | stop >`" . "\n" .
+		             "     Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
+		             "     Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
+		             "     Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
+		             "     Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
 
-		return '*Usage*: ' . $usage;
+		$listUsage = "*Usage*: `list`" . "\n" .
+		             "     List the available instances: " . "`list`" . "\n" .
+		             "*Usage*: `list <environment>`" . "\n" .
+		             "     List available SIT instances: " . "`list sit`" . "\n" .
+		             "     List available PROD instances: " . "`list prod`" . "\n";
+
+		return $tailUsage . "\n" . $listUsage;
 	}
 
 	public function get_sites_list() {
@@ -250,6 +269,7 @@ $bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/
 $bot->loadCommand( new Ciao() );
 $bot->loadCommand( new Hi() );
 $bot->loadCommand( new Helper() );
+$bot->loadCommand( new SiteList() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new How() );
