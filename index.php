@@ -155,6 +155,18 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 		$this->send($this->getCurrentChannel(), null, $this->usage() );
 	}
 
+	public function error( $text = 'Please retry' ) {
+		$message = array(
+			'attachments' => array(
+				'fallback'    => 'This is an error',
+				'color'       => 'danger',
+				'author_name' => 'Error',
+				'text'        => $text,
+			)
+		);
+		return json_encode( $message );
+	}
+
 	public function usage() {
 		$usage = "`tail <instance> < start | stop >`" . "\n" .
 		         "     Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
@@ -190,7 +202,7 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		if ( count( $params ) !== 3 ) {
 			$this->send($this->getCurrentChannel(), null, $helper->usage() );
 		} elseif ( ! in_array( $params[1], $helper->get_sites_list(), true ) ) {
-			$this->send($this->getCurrentChannel(), null, "Error: Instance does not exist" );
+			$this->send($this->getCurrentChannel(), null, $helper->error( 'Instance does not exist' ) );
 		} else {
 			$command   = $message['text'];
 			$channel   = $message['channel'];
@@ -209,7 +221,8 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 				$this->send($this->getCurrentChannel(), null, '>*' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} else {
-				$this->send($this->getCurrentChannel(), null, "Error: Action non allowed (start|stop)\n" . $helper->usage() );
+				$this->send($this->getCurrentChannel(), null, $helper->error( 'Action non allowed (start|stop)' ) );
+				$this->send($this->getCurrentChannel(), null, $helper->usage() );
 			}
 		}
 	}
