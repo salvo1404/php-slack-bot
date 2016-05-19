@@ -9,8 +9,7 @@
 require 'vendor/autoload.php';
 use PhpSlackBot\Bot;
 
-// Custom command
-class MyCommand extends \PhpSlackBot\Command\BaseCommand {
+class Ciao extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
 		$this->setName('ciao');
@@ -22,33 +21,21 @@ class MyCommand extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-// Custom command
-class Eugenesfault extends \PhpSlackBot\Command\BaseCommand {
+class Hi extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
-		$this->setName('who-broke-the-site');
+		$this->setName('hi');
 	}
 
 	protected function execute($message, $context) {
-		$this->send($this->getCurrentChannel(), null, 'Eugene');
+		$this->send(
+			$this->getCurrentChannel(),
+			null,
+			'Hi ' . $this->getUserNameFromUserId( $message['user'] ) . '.\nWhat can I do for you?' );
 	}
 
 }
 
-// Custom command
-class Context extends \PhpSlackBot\Command\BaseCommand {
-
-	protected function configure() {
-		$this->setName('context');
-	}
-
-	protected function execute($message, $context) {
-		$this->send($this->getCurrentChannel(), null, 'message = ' . json_encode( $message ) . ', channel = ' . $context['channel'] );
-	}
-
-}
-
-// Custom command
 class MessageInfo extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -61,7 +48,6 @@ class MessageInfo extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-// Custom command
 class Hey extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -74,7 +60,6 @@ class Hey extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-// Custom command
 class Who extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -95,7 +80,6 @@ class Who extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-// Custom command
 class Thanks extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -107,7 +91,6 @@ class Thanks extends \PhpSlackBot\Command\BaseCommand {
 	}
 }
 
-// Custom command
 class ThankYou extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -119,7 +102,6 @@ class ThankYou extends \PhpSlackBot\Command\BaseCommand {
 	}
 }
 
-// Custom command
 class What extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -140,7 +122,19 @@ class What extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
-// Custom command
+class Help extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('help');
+	}
+
+	protected function execute($message, $context) {
+
+		$this->send($this->getCurrentChannel(), null, $message['text'] );
+	}
+
+}
+
 class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -171,34 +165,6 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 	}
 }
 
-// Custom command
-class Params extends \PhpSlackBot\Command\BaseCommand {
-
-	protected function configure() {
-		$this->setName('params');
-	}
-
-	protected function execute($message, $context) {
-
-		$this->send($this->getCurrentChannel(), null, $message['text'] );
-	}
-
-}
-
-// Custom command
-class Help extends \PhpSlackBot\Command\BaseCommand {
-
-	protected function configure() {
-		$this->setName('help');
-	}
-
-	protected function execute($message, $context) {
-
-		$this->send($this->getCurrentChannel(), null, $message['text'] );
-	}
-
-}
-
 class SumoWebhook extends \PhpSlackBot\Webhook\BaseWebhook {
 
 	protected function configure() {
@@ -206,12 +172,9 @@ class SumoWebhook extends \PhpSlackBot\Webhook\BaseWebhook {
 	}
 
 	protected function execute($payload, $context) {
-		// $payload['channel'] = $this->getChannelIdFromChannelName($payload['channel']);
-
-		$this->send( $payload['channel'], null, $payload['text'] );
+		$this->send( $payload['channel'], null, '```' . $payload['text'] . '```' );
 		// $this->getClient()->send(json_encode($payload));
 	}
-
 }
 
 
@@ -221,9 +184,8 @@ if ( file_exists( __DIR__ . '/config.php' ) ) {
 
 $bot = new Bot();
 $bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/services/new/bot
-$bot->loadCommand( new MyCommand() );
-$bot->loadCommand( new Eugenesfault() );
-$bot->loadCommand( new Context() );
+$bot->loadCommand( new Ciao() );
+$bot->loadCommand( new Hi() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new What() );
