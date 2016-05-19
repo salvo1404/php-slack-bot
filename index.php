@@ -184,6 +184,16 @@ class SiteList extends \PhpSlackBot\Command\BaseCommand {
 
 class Helper extends \PhpSlackBot\Command\BaseCommand {
 
+	public $sites = array();
+
+	public function __construct() {
+		parent::__construct();
+
+		if ( file_exists( __DIR__ . '/instances.php' ) ) {
+			$this->sites = include( __DIR__ . '/instances.php' );
+		}
+	}
+
 	protected function configure() {
 		$this->setName('help');
 	}
@@ -210,13 +220,8 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function get_sites_list() {
-		$sites = array();
 		$list  = array();
-		if ( file_exists( __DIR__ . '/instances.php' ) ) {
-			$sites = include( __DIR__ . '/instances.php' );
-		}
-
-		foreach( $sites as $site ) {
+		foreach( $this->sites as $site ) {
 			$list[] = 'sit-' . $site;
 			$list[] = 'uat-' . $site;
 			$list[] = 'prod-' . $site;
