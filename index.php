@@ -96,6 +96,30 @@ class Who extends \PhpSlackBot\Command\BaseCommand {
 }
 
 // Custom command
+class Thanks extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('thanks');
+	}
+
+	protected function execute($message, $context) {
+		$this->send($this->getCurrentChannel(), null, "Not a problem" );
+	}
+}
+
+// Custom command
+class ThankYou extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('thank');
+	}
+
+	protected function execute($message, $context) {
+		$this->send($this->getCurrentChannel(), null, "Anytime" );
+	}
+}
+
+// Custom command
 class What extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
