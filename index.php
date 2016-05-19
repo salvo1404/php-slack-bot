@@ -297,6 +297,17 @@ class SumoWebhook extends \PhpSlackBot\Webhook\BaseWebhook {
 	}
 }
 
+class PrivateMessage extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('private');
+	}
+
+	protected function execute($message, $context) {
+		$this->send($this->getCurrentChannel(), null, $this->getImIdFromUserId( $message['user'] ) );
+	}
+
+}
 
 if ( file_exists( __DIR__ . '/config.php' ) ) {
 	$config = include( __DIR__ . '/config.php' );
@@ -304,6 +315,7 @@ if ( file_exists( __DIR__ . '/config.php' ) ) {
 
 $bot = new Bot();
 $bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/services/new/bot
+$bot->loadCommand( new PrivateMessage() );
 $bot->loadCommand( new Ciao() );
 $bot->loadCommand( new Hi() );
 $bot->loadCommand( new Helper() );
