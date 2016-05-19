@@ -157,10 +157,10 @@ class Help extends \PhpSlackBot\Command\BaseCommand {
 
 	public function usage() {
 		$usage = "`tail [<instance>] < start | stop >`" . "\n" .
-		         "Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
-		         "Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
-		         "Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
-		         "Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
+		         "     Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
+		         "     Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
+		         "     Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
+		         "     Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
 
 		return '*Usage*: ' . $usage;
 	}
@@ -174,6 +174,7 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function execute($message, $context) {
 		$params = explode(" ", $message['text'] );
+		$help = new Help();
 		/**
 		 * e.g. tail sit-heraldsun start
 		 *
@@ -182,11 +183,10 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		 * 2 action (start, stop)
 		 *
 		 */
-		if ( count( $params ) < 3 ) {
-			$help = new Help();
+		if ( count( $params ) !== 3 ) {
 			$this->send($this->getCurrentChannel(), null, $help->usage() );
 		} else {
-			$command   = implode( ' ', array_slice( $params, 0, 3 ) );
+			$command   = $message['text'];
 			$channel   = $message['channel'];
 			$user      = $message['user'];
 			$collector = 'spp-' . strtolower( $params[1] );
@@ -203,7 +203,7 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 				$this->send($this->getCurrentChannel(), null, '>*' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} else {
-				$this->send($this->getCurrentChannel(), null, 'Error: Action non allowed (start|stop)' );
+				$this->send($this->getCurrentChannel(), null, "Error: Action non allowed (start|stop)\n" . $help->usage() );
 			}
 		}
 	}
