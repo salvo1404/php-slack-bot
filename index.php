@@ -228,6 +228,8 @@ $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new What() );
 $bot->loadCommand( new Hey() );
+$bot->loadCommand( new Thanks() );
+$bot->loadCommand( new ThankYou() );
 $bot->loadCommand( new Params() );
 $bot->loadCommand( new SumoTail() );
 $bot->loadWebhook( new SumoWebhook() );
