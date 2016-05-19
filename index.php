@@ -156,13 +156,13 @@ class Help extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function usage() {
-		$usage = "```tail [<instance>] < start | stop >```" . "\n" .
-		             "Tail Heraldsun SIT error log: " . "```tail sit-heraldsun start```" . "\n" .
-		             "Tail Perthnow UAT error log: " . "```tail uat-perthnow start```" . "\n" .
-		             "Tail TheAustralian PROD error log: " . "```tail prod-theaustralian start```" . "\n" .
-		             "Stop tailing TheAustralian PROD error log: " . "```tail prod-theaustralian stop```";
+		$usage = "`tail [<instance>] < start | stop >`" . "\n" .
+		         "Tail Heraldsun SIT error log: " . "`tail sit-heraldsun start`" . "\n" .
+		         "Tail Perthnow UAT error log: " . "`tail uat-perthnow start`" . "\n" .
+		         "Tail TheAustralian PROD error log: " . "`tail prod-theaustralian start`" . "\n" .
+		         "Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
 
-		return $usage;
+		return '*Usage*: ' . $usage;
 	}
 }
 
@@ -229,6 +229,7 @@ $bot = new Bot();
 $bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/services/new/bot
 $bot->loadCommand( new Ciao() );
 $bot->loadCommand( new Hi() );
+$bot->loadCommand( new Help() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new How() );
