@@ -104,6 +104,37 @@ class What extends \PhpSlackBot\Command\BaseCommand {
 }
 
 // Custom command
+class SumoTail extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('tail');
+	}
+
+	protected function execute($message, $context) {
+		$command = explode(" ", $message['text'] );
+		/**
+		 * e.g. tail sit-heraldsun start
+		 *
+		 * 0 tail
+		 * 1 env
+		 * 2 action (start, stop)
+		 *
+		 */
+		if ( count( $command ) < 3 ) {
+			$this->send($this->getCurrentChannel(), null, "Error: i.e 'tail sit-heraldsun start'" );
+		} else {
+			$channel = $message['channel'];
+			$user = $message['user'];
+			$collector = 'spp-' . $command[1];
+			$exec = "curl 'http://localhost:8080/?slack_id=" . $channel . "&source=" . $collector . "'";
+//			exec( $exec );
+			$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
+			$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
+		}
+	}
+}
+
+// Custom command
 class Params extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -127,25 +158,6 @@ class Help extends \PhpSlackBot\Command\BaseCommand {
 	protected function execute($message, $context) {
 
 		$this->send($this->getCurrentChannel(), null, $message['text'] );
-	}
-
-}
-
-// This special command executes on all events
-class SumoLiveTail extends \PhpSlackBot\Command\BaseCommand {
-
-	protected function configure() {
-		// We don't have to configure a command name in this case
-	}
-
-	protected function execute($data, $context) {
-		if ($data['type'] == 'message') {
-			$channel = $this->getChannelNameFromChannelId($data['channel']);
-			$username = $this->getUserNameFromUserId($data['user']);
-			$message = $username.' from '.($channel ? $channel : 'DIRECT MESSAGE').' : '.$data['text'].PHP_EOL;
-			// echo $message;
-			$this->send( $channel, null, $message );
-		}
 	}
 
 }
@@ -179,6 +191,7 @@ $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new What() );
 $bot->loadCommand( new Params() );
+$bot->loadCommand( new SumoTail() );
 $bot->loadWebhook( new SumoWebhook() );
 $bot->enableWebserver( 8082, $config['webhook_key'] );
 // $bot->loadCatchAllCommand( new SumoLiveTail() );
