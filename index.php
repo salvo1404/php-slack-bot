@@ -144,6 +144,14 @@ class How extends \PhpSlackBot\Command\BaseCommand {
 
 }
 
+/**
+ * Command to list available sites
+ *
+ * e.g. list [<environment>]
+ *
+ * 0 list
+ * 1 [<environment>]
+ */
 class SiteList extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -151,8 +159,25 @@ class SiteList extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	protected function execute($message, $context) {
+		$params = explode(" ", $message['text'] );
 		$helper = new Helper();
-		$this->send($this->getCurrentChannel(), null, "*List of available instances*: \n" . implode( "\n", $helper->get_sites_list() ) );
+
+		if ( count( $params ) === 1 ) {
+			$this->send(
+				$this->getCurrentChannel(),
+				null,
+				"*List of available instances*: \n" . implode( "\n", $helper->get_sites_list() )
+			);
+		} elseif ( count( $params ) === 2 ) {
+			$env = $params[1];
+			$this->send(
+				$this->getCurrentChannel(),
+				null,
+				"*List of available *" . strtoupper( $env ) . "* instances*: \n" . implode( "\n", $helper->get_env_list( $env ) )
+			);
+		} else {
+			$this->send($this->getCurrentChannel(), null, $helper->usage() );
+		}
 	}
 
 }
@@ -176,7 +201,7 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 		             "     Stop tailing TheAustralian PROD error log: " . "`tail prod-theaustralian stop`";
 
 		$listUsage = "*Usage*: `list`" . "\n" .
-		             "     List the available instances: " . "`list`" . "\n" .
+		             "     List available instances: " . "`list`" . "\n" .
 		             "*Usage*: `list <environment>`" . "\n" .
 		             "     List available SIT instances: " . "`list sit`" . "\n" .
 		             "     List available PROD instances: " . "`list prod`" . "\n";
@@ -200,8 +225,28 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 
 		return $list;
 	}
+
+	public function get_env_list( $env ) {
+		$list = array();
+		foreach( $this->get_sites_list() as $site ) {
+			if ( 0 === strpos( $site, $env ) ) {
+				$list[] = $site;
+			}
+		}
+
+		return $list;
+	}
 }
 
+/**
+ * Command to tail sumolog
+ *
+ * e.g. tail sit-heraldsun start
+ *
+ * 0 tail
+ * 1 <instance>
+ * 2 <start|stop>
+ */
 class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -212,13 +257,6 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		$params = explode(" ", $message['text'] );
 		$helper = new Helper();
 
-		/**
-		 * e.g. tail sit-heraldsun start
-		 *
-		 * 0 tail
-		 * 1 <instance>
-		 * 2 <start|stop>
-		 */
 		if ( count( $params ) !== 3 ) {
 			$this->send($this->getCurrentChannel(), null, $helper->usage() );
 		} elseif ( ! in_array( $params[1], $helper->get_sites_list(), true ) ) {
