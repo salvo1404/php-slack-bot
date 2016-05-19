@@ -67,12 +67,15 @@ class Who extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	protected function execute($message, $context) {
-		$question = strtoupper( $message['text'] );
+		$question = strtolower( $message['text'] );
 
-		if( $question  === 'WHO AM I') {
+		if( strpos( $question, 'broke' ) !== false || strpos( $question, 'broken' ) !== false ) {
+			$this->send($this->getCurrentChannel(), null, "It would be Eugene\nThis guy https://avatars0.githubusercontent.com/u/10735132?v=3&s=400" );
+		}
+		if( strpos( $question, 'who am i' ) !== false ) {
 			$this->send($this->getCurrentChannel(), null, $this->getUserNameFromUserId( $this->getCurrentUser() ) );
-		} elseif ( $question === 'WHO BROKE THE SITE' ) {
-			$this->send($this->getCurrentChannel(), null, "Always Eugene\nThis guy https://avatars0.githubusercontent.com/u/10735132?v=3&s=400" );
+		} elseif ( strpos( $question, 'who are you' ) !== false ) {
+			$this->send($this->getCurrentChannel(), null, "My name is J.a.r.v.i.s\nI'm a slack bot created by SPP core team" );
 		} else {
 			$this->send($this->getCurrentChannel(), null, "Don't know man" );
 		}
@@ -109,14 +112,34 @@ class What extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	protected function execute($message, $context) {
-		$question = strtoupper( $message['text'] );
+		$question = strtolower( $message['text'] );
 
-		if( $question  === 'WHAT DO YOU WANT') {
+		if( strpos( $question, 'what do you want' ) !== false ) {
 			$this->send($this->getCurrentChannel(), null, 'I want to sleep' );
-		} elseif ( $question === "WHAT'S UP" ) {
-			$this->send($this->getCurrentChannel(), null, "Hey buddy, let's go for a beer" );
+		} elseif ( strpos( $question, 'what are you doing' ) !== false ) {
+			$this->send($this->getCurrentChannel(), null, "Just chilling in the cloud" );
 		} else {
-			$this->send($this->getCurrentChannel(), null, "Too many questions..Sorry I'm hungover" );
+			$this->send($this->getCurrentChannel(), null, "Not sure about that" );
+		}
+	}
+
+}
+
+class How extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('how');
+	}
+
+	protected function execute($message, $context) {
+		$question = strtolower( $message['text'] );
+
+		if( strpos( $question, 'how are you' ) !== false ) {
+			$this->send($this->getCurrentChannel(), null, "Had a big one last night.\nBit hungover.\nHow are you?" );
+		} elseif ( strpos( $question, 'how is going' ) !== false ) {
+			$this->send($this->getCurrentChannel(), null, "Not too bad man" );
+		} else {
+			$this->send($this->getCurrentChannel(), null, "Hey buddy give me a break" );
 		}
 	}
 
@@ -188,6 +211,7 @@ $bot->loadCommand( new Ciao() );
 $bot->loadCommand( new Hi() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
+$bot->loadCommand( new How() );
 $bot->loadCommand( new What() );
 $bot->loadCommand( new Hey() );
 $bot->loadCommand( new Thanks() );
