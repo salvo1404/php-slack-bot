@@ -3,3 +3,9 @@ bot.php
 composer.phar
 composer.lock
 vendor
+
+## Config File
+config.php
+
+## Directory-based project format:
+.idea/

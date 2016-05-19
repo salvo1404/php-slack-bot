@@ -166,9 +166,12 @@ class SumoWebhook extends \PhpSlackBot\Webhook\BaseWebhook {
 }
 
 
+if ( file_exists( __DIR__ . '/config.php' ) ) {
+	$config = include( __DIR__ . '/config.php' );
+}
 
 $bot = new Bot();
-$bot->setToken('token'); // Get your token here https://my.slack.com/services/new/bot
+$bot->setToken( $config['token'] ); // Get your token here https://my.slack.com/services/new/bot
 $bot->loadCommand( new MyCommand() );
 $bot->loadCommand( new Eugenesfault() );
 $bot->loadCommand( new Context() );
@@ -177,6 +180,6 @@ $bot->loadCommand( new Who() );
 $bot->loadCommand( new What() );
 $bot->loadCommand( new Params() );
 $bot->loadWebhook( new SumoWebhook() );
-$bot->enableWebserver( 8082, 'secret' );
+$bot->enableWebserver( 8082, $config['webhook_key'] );
 // $bot->loadCatchAllCommand( new SumoLiveTail() );
 $bot->run();
