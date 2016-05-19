@@ -152,9 +152,18 @@ class Help extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function execute($message, $context) {
 
-		$this->send($this->getCurrentChannel(), null, $message['text'] );
+		$this->send($this->getCurrentChannel(), null, $this->usage() );
 	}
 
+	public function usage() {
+		$usage = "```tail [<instance>] < start | stop >```" . "\n" .
+		             "Tail Heraldsun SIT error log: " . "```tail sit-heraldsun start```" . "\n" .
+		             "Tail Perthnow UAT error log: " . "```tail uat-perthnow start```" . "\n" .
+		             "Tail TheAustralian PROD error log: " . "```tail prod-theaustralian start```" . "\n" .
+		             "Stop tailing TheAustralian PROD error log: " . "```tail prod-theaustralian stop```";
+
+		return $usage;
+	}
 }
 
 class SumoTail extends \PhpSlackBot\Command\BaseCommand {
@@ -174,7 +183,8 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		 *
 		 */
 		if ( count( $params ) < 3 ) {
-			$this->send($this->getCurrentChannel(), null, "Error: i.e 'tail sit-heraldsun start'" );
+			$help = new Help();
+			$this->send($this->getCurrentChannel(), null, $help->usage() );
 		} else {
 			$command   = implode( ' ', array_slice( $params, 0, 3 ) );
 			$channel   = $message['channel'];
@@ -229,5 +239,4 @@ $bot->loadCommand( new ThankYou() );
 $bot->loadCommand( new SumoTail() );
 $bot->loadWebhook( new SumoWebhook() );
 $bot->enableWebserver( 8080, $config['webhook_key'] );
-// $bot->loadCatchAllCommand( new SumoLiveTail() );
 $bot->run();
