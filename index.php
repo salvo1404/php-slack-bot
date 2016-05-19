@@ -31,7 +31,7 @@ class Hi extends \PhpSlackBot\Command\BaseCommand {
 		$this->send(
 			$this->getCurrentChannel(),
 			null,
-			'Hi ' . $this->getUserNameFromUserId( $message['user'] ) . '.\nWhat can I do for you?' );
+			"Hi " . $this->getUserNameFromUserId( $message['user'] ) . ".\nWhat can I do for you?" );
 	}
 
 }
