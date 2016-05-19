@@ -166,7 +166,20 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	public function get_sites_list() {
-		return include( __DIR__ . '/instances.php' );
+		$sites = array();
+		$list  = array();
+		if ( file_exists( __DIR__ . '/instances.php' ) ) {
+			$sites = include( __DIR__ . '/instances.php' );
+		}
+
+		foreach( $sites as $site ) {
+			$list[] = 'sit-' . $site;
+			$list[] = 'uat-' . $site;
+			$list[] = 'prod-' . $site;
+			$list[] = 'ls-' . $site;
+		}
+
+		return $list;
 	}
 }
 
@@ -246,5 +259,5 @@ $bot->loadCommand( new Thanks() );
 $bot->loadCommand( new ThankYou() );
 $bot->loadCommand( new SumoTail() );
 $bot->loadWebhook( new SumoWebhook() );
-$bot->enableWebserver( 8080, $config['webhook_key'] );
+$bot->enableWebserver( 8080, $config['webhook_auth'] );
 $bot->run();
