@@ -62,6 +62,19 @@ class MessageInfo extends \PhpSlackBot\Command\BaseCommand {
 }
 
 // Custom command
+class Hey extends \PhpSlackBot\Command\BaseCommand {
+
+	protected function configure() {
+		$this->setName('hey');
+	}
+
+	protected function execute($message, $context) {
+		$this->send($this->getCurrentChannel(), null, "hey what's up buddy" );
+	}
+
+}
+
+// Custom command
 class Who extends \PhpSlackBot\Command\BaseCommand {
 
 	protected function configure() {
@@ -74,7 +87,7 @@ class Who extends \PhpSlackBot\Command\BaseCommand {
 		if( $question  === 'WHO AM I') {
 			$this->send($this->getCurrentChannel(), null, $this->getUserNameFromUserId( $this->getCurrentUser() ) );
 		} elseif ( $question === 'WHO BROKE THE SITE' ) {
-			$this->send($this->getCurrentChannel(), null, 'Eugene :D' );
+			$this->send($this->getCurrentChannel(), null, "Always Eugene\nThis guy https://avatars0.githubusercontent.com/u/10735132?v=3&s=400" );
 		} else {
 			$this->send($this->getCurrentChannel(), null, "Don't know man" );
 		}
@@ -190,9 +203,10 @@ $bot->loadCommand( new Context() );
 $bot->loadCommand( new MessageInfo() );
 $bot->loadCommand( new Who() );
 $bot->loadCommand( new What() );
+$bot->loadCommand( new Hey() );
 $bot->loadCommand( new Params() );
 $bot->loadCommand( new SumoTail() );
 $bot->loadWebhook( new SumoWebhook() );
-$bot->enableWebserver( 8082, $config['webhook_key'] );
+$bot->enableWebserver( 8080, $config['webhook_key'] );
 // $bot->loadCatchAllCommand( new SumoLiveTail() );
 $bot->run();
