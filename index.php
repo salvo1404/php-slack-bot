@@ -164,7 +164,7 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 	}
 
 	protected function execute($message, $context) {
-		$command = explode(" ", $message['text'] );
+		$params = explode(" ", $message['text'] );
 		/**
 		 * e.g. tail sit-heraldsun start
 		 *
@@ -173,23 +173,24 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 		 * 2 action (start, stop)
 		 *
 		 */
-		if ( count( $command ) < 3 ) {
+		if ( count( $params ) < 3 ) {
 			$this->send($this->getCurrentChannel(), null, "Error: i.e 'tail sit-heraldsun start'" );
 		} else {
+			$command   = implode( ' ', array_slice( $params, 0, 3 ) );
 			$channel   = $message['channel'];
 			$user      = $message['user'];
-			$collector = 'spp-' . strtolower( $command[1] );
-			$action    = strtolower( $command[2] );
+			$collector = 'spp-' . strtolower( $params[1] );
+			$action    = strtolower( $params[2] );
 
 			if ( 'start' === $action ) {
 				$exec = "curl 'http://localhost:8080/?slack_id=" . $channel . "&source=" . $collector . "'";
 //			    exec( $exec );
-				$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
+				$this->send($this->getCurrentChannel(), null, '> *' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} elseif ( 'stop' === $action ) {
 				$exec = "curl 'STOP'"; // Add command to stop
 //			    exec( $exec );
-				$this->send($this->getCurrentChannel(), null, '>' . $message['text'] );
+				$this->send($this->getCurrentChannel(), null, '>*' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} else {
 				$this->send($this->getCurrentChannel(), null, 'Error: Action non allowed (start|stop)' );
