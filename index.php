@@ -166,14 +166,14 @@ class SiteList extends \PhpSlackBot\Command\BaseCommand {
 			$this->send(
 				$this->getCurrentChannel(),
 				null,
-				"*List of available instances*: \n" . implode( "\n", $helper->get_sites_list() )
+				">*List of available instances*: \n" . implode( "\n", $helper->get_sites_list() )
 			);
 		} elseif ( count( $params ) === 2 ) {
 			$env = $params[1];
 			$this->send(
 				$this->getCurrentChannel(),
 				null,
-				"*List of available *" . strtoupper( $env ) . "* instances*: \n" . implode( "\n", $helper->get_env_list( $env ) )
+				">*List of available " . strtoupper( $env ) . " instances*: \n" . implode( "\n", $helper->get_env_list( $env ) )
 			);
 		} else {
 			$this->send($this->getCurrentChannel(), null, $helper->usage() );
