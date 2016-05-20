@@ -269,13 +269,13 @@ class SumoTail extends \PhpSlackBot\Command\BaseCommand {
 			$action    = strtolower( $params[2] );
 
 			if ( 'start' === $action ) {
-				$exec = "curl 'http://localhost:8080/?slack_id=" . $channel . "&source=" . $collector . "'";
-//			    exec( $exec );
+				$exec = "curl 'http://localhost:8088/?slack_id=" . $channel . "&source=" . $collector . "&action=" . $action . "'";
+			    exec( $exec );
 				$this->send($this->getCurrentChannel(), null, '> *' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} elseif ( 'stop' === $action ) {
-				$exec = "curl 'STOP'"; // Add command to stop
-//			    exec( $exec );
+				$exec = "curl 'http://localhost:8088/?slack_id=" . $channel . "&source=" . $collector . "&action=" . $action . "'";
+			    exec( $exec );
 				$this->send($this->getCurrentChannel(), null, '>*' . $command . '*' );
 				$this->send($this->getCurrentChannel(), null, '```' . $exec . '```' );
 			} else {
