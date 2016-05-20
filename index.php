@@ -222,7 +222,8 @@ class Helper extends \PhpSlackBot\Command\BaseCommand {
 			$list[] = 'prod-' . $site;
 			$list[] = 'ls-' . $site;
 		}
-
+		$list[] = 'juan-test';
+		
 		return $list;
 	}
 
